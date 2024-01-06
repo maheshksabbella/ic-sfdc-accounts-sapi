@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd 
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+	<flow name="updateAccountFlow" doc:id="afee0837-34c1-4068-9161-bd4fd7e0317e">
+		<json-logger:logger doc:name="updatAccount  System API" doc:id="da213efe-c268-41ef-af68-cb6df7612632" message="upadateAccountStartFlow" category="ic-sfdc-account-sapi"/>
+		<ee:transform doc:name="Mapping To Salesforce Fields">
+            <ee:message >
+				<ee:set-payload resource="dwlScripts/updateAccountMap.dwl" />
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="id" ><![CDATA[attributes.uriParams.id]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+		<salesforce:update type="Account" doc:name="To Modify Existing Account Object By Id" doc:id="28bc1cd9-ac52-4412-a72b-023027fe29a7" config-ref="Salesforce_Config"/>
+		<ee:transform doc:name="Put Filtered Payload" doc:id="3b5c6eb1-71d7-45ce-b3ef-12d7aa7dea99">
+			<ee:message>
+				<ee:set-payload resource="dwlScripts/commonOutputResponse.dwl" />
+			</ee:message>
+		</ee:transform>
+		<json-logger:logger doc:name="updatAccount  System API" doc:id="8ae33dcd-0228-451c-a5d7-ae2dcffbf189" tracePoint="END" message="updateAccountEndFlow" category="ic-sfdc-account-sapi"/>
+    </flow>
+	<flow name="deleteAccountFlow" doc:id="a5ed2b40-b6cf-4bce-bdfb-98638b89812f">
+        <json-logger:logger doc:name="delAccount System API" doc:id="ba7f532a-663c-43ed-8067-9ec138acc5a8" config-ref="JSON_Logger_Config" message="delAccountStartFlow" category="ic-sfdc-account-sapi"/>
+		<salesforce:delete doc:name="To Delete The Account Obj By Id" doc:id="82bfbc7c-7aae-4438-ae34-e592981f9883" config-ref="Salesforce_Config">
+			<salesforce:ids ><![CDATA[#[[attributes.uriParams.id]]]]></salesforce:ids>
+		</salesforce:delete>
+		<ee:transform doc:name="Delete Filtered Payload" doc:id="c55ab4a9-8cc3-4ccb-bc8f-594a4e5748f6">
+			<ee:message>
+				<ee:set-payload resource="dwlScripts/commonOutputResponse.dwl" />
+			</ee:message>
+		</ee:transform>
+		<json-logger:logger doc:name="delAccount System API" doc:id="9f6329a2-9ae6-4730-bfbe-66ebba79f076" tracePoint="END" message="deleteAccountEndFlow" category="ic-sfdc-account-sapi"/>
+    </flow>
+    <flow name="getAccountFlow" doc:id="8191ae67-5dd2-4c74-be42-8f88bb2c4f51">
+		<json-logger:logger doc:name="getAccount System API" doc:id="ed86b1da-e6c5-4340-b770-31f5c1bd9551" message="getAccountStartFlow" category="ic-sfdc-account-sapi"/>
+		<salesforce:query-all doc:name="To Retrive All Accounts" doc:id="9ea1e434-2864-4284-ad57-fd8a0f9ab4e6" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query ><![CDATA[SELECT BillingCity,BillingCountry,BillingPostalCode,BillingState,BillingStreet,Id,Name,Phone,ShippingCity,ShippingCountry,ShippingPostalCode,ShippingState,ShippingStreet FROM Account]]></salesforce:salesforce-query>
+		</salesforce:query-all>
+		<ee:transform doc:name="Get Filtered Payload" doc:id="5ad6e430-a5ee-4228-bd9a-a190fdab5517">
+			<ee:message>
+				<ee:set-payload resource="dwlScripts/getAccountResponse.dwl" />
+			</ee:message>
+		</ee:transform>
+		<json-logger:logger doc:name="getAccount System API" doc:id="0f1df5c9-bd7a-4723-a8a5-ec3dcea08b20" tracePoint="END" message="getAccountEndFlow" category="ic-sfdc-account-sapi" />
+    </flow>
+    <flow name="getAccountFlowById" doc:id="eb92862b-459d-4571-a541-0d2b6aacf3e2">
+        <json-logger:logger doc:name="getAcountById System API" doc:id="f3b757c0-fd26-4151-af7e-030d9ac498d6" config-ref="JSON_Logger_Config" message="getAccountByIdStartFlow" category="ic-sfdc-account-sapi"/>
+		<salesforce:query doc:name="To Retrive Account  By Id" doc:id="414c091f-71d3-42ec-b3b6-a50ea087a36d" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query ><![CDATA[SELECT BillingCity,BillingCountry,BillingPostalCode,BillingState,BillingStreet,Id,Name,Phone,ShippingCity,ShippingCountry,ShippingPostalCode,ShippingState,ShippingStreet FROM Account where Id=':id']]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[{
+	'id': attributes.uriParams.id
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="Get Filtered Payload By Id" doc:id="edf270e4-4d49-4919-a8ea-0ebbaaab99dc">
+			<ee:message>
+				<ee:set-payload resource="dwlScripts/getFilterById.dwl" />
+			</ee:message>
+		</ee:transform>
+		<json-logger:logger doc:name="getAcountById System API" doc:id="6cae3884-2131-424a-8c7a-f892d601f7fe" tracePoint="END" message="getAccountByIdEndFlow" category="ic-sfdc-account-sapi"/>
+    </flow>
+	<flow name="createAccountFow" doc:id="dcb6fde6-9ee2-46e2-9ccd-777bbfdb46cb">
+		<json-logger:logger doc:name="Logger" doc:id="a18528ab-57c4-470c-9495-97a8ddd7d245" config-ref="JSON_Logger_Config" message="createAccountStartFlow" category="ic-sfdc-account-sapi"/>
+		<ee:transform doc:name="Mapping To Salesforce Fields" doc:id="79e4fd1c-f88a-4d71-abc6-5d8102d5809a" >
+			<ee:message >
+				<ee:set-payload resource="dwlScripts/mappingFields.dwl" />
+			</ee:message>
+		</ee:transform>
+		<salesforce:create type="Account" doc:name="To Create Account Object" doc:id="4a9dc679-3914-4adb-9aac-7f8458a52072" config-ref="Salesforce_Config"/>
+		<ee:transform doc:name="Post Filtered Payload" doc:id="1faed024-df67-430e-8abb-2e25fe6a540b">
+			<ee:message>
+				<ee:set-payload resource="dwlScripts/commonOutputResponse.dwl" />
+			</ee:message>
+		</ee:transform>
+		<json-logger:logger doc:name="Logger" doc:id="4665ba90-6892-4d77-a3a2-bf448f7cd808" config-ref="JSON_Logger_Config" tracePoint="END" message="createAccountEndFlow" category="ic-sfdc-account-sapi"/>
+    </flow>
+</mule>

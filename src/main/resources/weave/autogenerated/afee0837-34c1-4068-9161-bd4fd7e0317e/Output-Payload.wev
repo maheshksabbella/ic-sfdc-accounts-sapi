@@ -1,0 +1,12 @@
+%dw 2.0
+
+type auto_afee0837_34c1_4068_9161_bd4fd7e0317e_Output_Payload = {
+  response: Array<{    payload: {      success: Boolean,       id: String,       errors: Array<Any>, 
+      _?: Any
+    }, 
+    _?: Any
+  }>, 
+  is_success: Boolean, 
+  _?: Any
+}
+

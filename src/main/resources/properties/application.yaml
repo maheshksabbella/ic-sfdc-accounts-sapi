@@ -1,0 +1,16 @@
+api:
+  id: "19216797" #for API Manager registration
+  errorResponse : "verbose" #verbose - info - none
+
+keystore:
+  path: "keystore.jks"
+  password: "mule1234"
+  keyPassword: "mule1234"
+
+application:
+  name: "ic-sfdc-account-sapi"
+  artifactId: "accountObj-sapi"
+  version: "1.0.0"
+
+https:
+ port: "8082"

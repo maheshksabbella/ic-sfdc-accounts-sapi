@@ -1,0 +1,13 @@
+salesforce:
+ username: "maheshkmarreddysabbella-g12d@force.com"
+ password: "![fQrjowPakZHekUK9xaW3fA==]"
+ securitytoken: "![twb/0IhtvKigCqYi8AakPjiT2RWDH/9UCOmpL5C78mM=]"
+ 
+keystore:
+  path: "keystore.jks"
+  password: "mule1234"
+  keyPassword: "mule1234"
+
+api:
+  id: "19146107" #for API Manager registration
+  errorResponse : "verbose" #verbose - info - none
