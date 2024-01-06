@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+    xmlns:http="http://www.mulesoft.org/schema/mule/http"
+    xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+    xmlns:min-log="http://www.mulesoft.org/schema/mule/min-log" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+    xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+    xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd 
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd 
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd
+http://www.mulesoft.org/schema/mule/min-log http://www.mulesoft.org/schema/mule/min-log/current/mule-min-log.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+    <error-handler name="globalError_Handler" doc:id="c88bfeb5-6d05-46ea-945a-28afce30fa3c">
+
+        <!-- APIKit router related exceptions -->
+        <on-error-propagate type="APIKIT:BAD_REQUEST" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="4e177959-e0f5-4e48-b6a5-e6bb8faaa286" >
+            <set-variable value="#[400]" doc:name="Set the HTTP Status - 400" doc:id="2580ac03-cbc3-4f93-aba4-bb5bf0a8381d" variableName="httpStatus"/>
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="0d22a8e0-e5c8-4f3e-92eb-4e9d6621bd61" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="92c06d3a-76a3-4378-8a80-72a63a6392a7" name="error-handling-details"/>
+        </on-error-propagate>
+        <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="1250dd19-e156-4f04-a773-e7a899a105c8" >
+            <set-variable value="#[405]" doc:name="Set the HTTP Status - 405" doc:id="926f3ac1-4615-42d6-8bec-676b7f9dea8e" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="01dcb41e-31a1-4aa4-a015-666ae71b3639" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="d65b7945-62a2-47ca-a636-476a015926a3" name="error-handling-details"/>
+        </on-error-propagate>
+        <on-error-propagate type="APIKIT:NOT_ACCEPTABLE" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="62a4d39c-0db4-4471-a1e7-df8a050a44a2" >
+            <set-variable value="#[406]" doc:name="Set the HTTP Status - 406" doc:id="0893584a-b420-4a81-8b06-792ed6911381" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="d4aa330e-fa0d-4b68-91a6-c3637133f341" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="ca23d2a8-b5cc-43df-b0aa-7f1f5104c045" name="error-handling-details"/>
+        </on-error-propagate>
+        <on-error-propagate type="APIKIT:NOT_FOUND" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="a8f90d83-d662-448d-97e8-956c71ef114a" >
+            <set-variable value="#[404]" doc:name="Set the HTTP Status - 404" doc:id="dccf145b-fcdf-401a-ad8d-5e333ac57907" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="a4788d87-3c6c-47b3-9927-5424d8a4f02a" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="a420ee56-1a47-4577-ad73-178cf8c81673" name="error-handling-details"/>
+        </on-error-propagate>
+        <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="8deb2c5a-43aa-47ba-8910-8bbd93933f0a" >
+            <set-variable value="#[415]" doc:name="Set the HTTP Status - 415" doc:id="60aa240a-e695-43b4-8767-aef0d778e3b7" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="0bfb14b9-9bac-4516-8871-f455247e54ba" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="74377ff2-0cdc-4785-b377-24daf2fe8388" name="error-handling-details"/>
+        </on-error-propagate>    
+        
+        
+        <!-- HTTP Requester Related error handling -->  
+        <on-error-propagate type="HTTP:BAD_REQUEST" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="03f8cfae-653b-4e40-b63f-934c622dd047" >
+            <set-variable value="#[400]" doc:name="Set the HTTP Status - 400" doc:id="e1696ce2-39c3-4962-862f-c1dc6b72212f" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="546a316a-4982-47de-b47c-b19223e826b1" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="5b389ffa-2bef-4966-a22e-ff3ac32bba49" name="error-handling-details"/>
+        </on-error-propagate>
+        <on-error-propagate type="HTTP:CLIENT_SECURITY" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b2d03528-ffad-4d4a-83e6-3f5f8cfd97fe" >
+            <set-variable value="#[401]" doc:name="Set the HTTP Status - 401" doc:id="4c2b1770-5812-4b5b-91cb-ac4db7b7d7e7" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="dbfdffe0-16eb-4033-afb2-421cb280819f" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="6c84b6bf-bf54-493b-9f83-b65261ac1929" name="error-handling-details"/>
+        </on-error-propagate>
+        <on-error-propagate type="HTTP:CONNECTIVITY" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="9a711da9-f4a9-4e2a-9206-38ceb192d16c" >
+            <set-variable value="#[503]" doc:name="Set the HTTP Status - 503" doc:id="dfebccaf-ffc5-492a-ab0a-18b0ca23a7d9" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="e7422143-0fa6-4271-9fd1-07b6d91083da" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="76fdb8df-6ecf-44da-a2de-7a89932679a7" name="error-handling-details"/>
+        </on-error-propagate>
+        <on-error-propagate type="HTTP:FORBIDDEN" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="184a7911-1040-44bd-821a-044f62e48c0a" >
+            <set-variable value="#[403]" doc:name="Set the HTTP Status - 403" doc:id="60d8a063-e2e2-4f92-a28f-5cfbcfe58c3d" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="050124ad-ab18-43db-8d2e-7c27359ede82" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="f57b7a3a-db5c-4bf6-9b1b-ca8a6870210b" name="error-handling-details"/>
+        </on-error-propagate>
+        <on-error-propagate type="HTTP:INTERNAL_SERVER_ERROR" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="4ed79c97-e190-4e67-a219-59ada189f49e" >
+            <set-variable value="#[500]" doc:name="Set the HTTP Status - 500" doc:id="ebd1638f-cdb4-4e66-8eaa-888cd91629e5" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="7cb8d88d-bf9e-4467-a5f7-24479ff547f6" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="0b26dcf5-4138-49f3-b8b6-a9d61fdb2658" name="error-handling-details"/>
+        </on-error-propagate>
+        <on-error-propagate type="HTTP:METHOD_NOT_ALLOWED" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="7ea8f66d-8bd5-4296-bc9f-0756588df656" >
+            <set-variable value="#[405]" doc:name="Set the HTTP Status - 405" doc:id="d8d34916-58e0-4cba-b752-c354757b6c7f" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="f98783a5-5038-409f-86a6-e32336f3e550" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="fb286c8e-02e7-4d79-a728-bfbaa618ff3b" name="error-handling-details"/>
+        </on-error-propagate>
+        <on-error-propagate type="HTTP:NOT_ACCEPTABLE" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="c3e71d2a-7d11-4b5e-87d9-573742fcf2f8" >
+            <set-variable value="#[406]" doc:name="Set the HTTP Status - 406" doc:id="e2873157-6193-45e3-8da5-068c5b0df74a" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="a6ee1cc7-546a-40cf-a422-bea6dba7d76b" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="047ed66a-4d5d-4fd3-b182-dcc5fbb90e71" name="error-handling-details"/>
+        </on-error-propagate>
+        <on-error-propagate type="HTTP:NOT_FOUND" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="129cc02a-6697-42ab-884d-32492db24530" >
+            <set-variable value="#[404]" doc:name="Set the HTTP Status - 404" doc:id="07615c2f-f3b3-4289-8f0a-40c9cd0512ed" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="69e33071-786b-4e40-b81f-5cf9d0c93caa" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="cb0a0329-aebe-4099-8e41-829f41654121" name="error-handling-details"/>
+        </on-error-propagate>
+        <on-error-propagate type="HTTP:PARSING" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="5cd45ebc-50e2-4be5-b335-9824ef0efbd1" >
+            <set-variable value="#[400]" doc:name="Set the HTTP Status - 400" doc:id="4f5efd8a-9151-4bd2-80c3-69faa62a47af" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="f5e8ca75-6370-4960-acce-7993efd24dbb" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="584f093c-3ea3-47fd-bdf1-b381f53d5ec9" name="error-handling-details"/>
+        </on-error-propagate>
+        <on-error-propagate type="HTTP:RETRY_EXHAUSTED" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="afeaf8a6-f939-4311-9807-008aa7923934" >
+            <set-variable value="#[503]" doc:name="Set the HTTP Status - 503" doc:id="e6e94708-0a04-49c8-992b-a8b800bc8536" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="0d05aa58-252c-4c7a-85f5-5e0135d9f60c" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="235f1e86-3f5b-4c33-853f-cdc743fb5fa4" name="error-handling-details"/>
+        </on-error-propagate>
+        <on-error-propagate type="HTTP:SECURITY" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="72b5cbf3-c4d3-4c01-b4dd-0488ac69d678" >
+            <set-variable value="#[401]" doc:name="Set the HTTP Status - 401" doc:id="3235a098-e5c8-4ab8-a710-3d74e08a7f40" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="af90bd23-f4e0-43c3-8fe2-8a19f4128963" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="cfbda8e5-4a6f-4c7e-b0b5-0687e9b0a5fc" name="error-handling-details"/>
+        </on-error-propagate>
+        <on-error-propagate type="HTTP:TIMEOUT" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="970bf6b7-321c-46ef-9477-cf5a8e06c645" >
+            <set-variable value="#[504]" doc:name="Set the HTTP Status - 504" doc:id="5059d4e0-9848-42ab-a3f2-54c1664128f1" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="acdb8932-5bf7-4055-8039-6b06fd6eeb1e" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="06e4c213-a3d0-4d2a-8e72-de463329a2d0" name="error-handling-details"/>
+        </on-error-propagate>
+        <on-error-propagate type="HTTP:TOO_MANY_REQUESTS" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="9d2178f0-530e-4c5e-bd57-f0e8a1f06fd7" >
+            <set-variable value="#[429]" doc:name="Set the HTTP Status - 429" doc:id="d29c7114-6681-4488-866a-13d041e98927" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="aa5ffc08-4e3a-4a99-9dc2-f9fd5de9b5cf" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="9b27c1e6-a184-4634-966b-30dc3319f210" name="error-handling-details"/>
+        </on-error-propagate>
+        <on-error-propagate type="HTTP:UNAUTHORIZED" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="65ac25f1-ea81-40ca-9841-c51d88aac553" >
+            <set-variable value="#[403]" doc:name="Set the HTTP Status - 403" doc:id="36aa4c52-926f-46fd-aaca-e3cae4c0d776" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="4ea1746a-cbd2-4bb8-8025-1772dbe1d3ee" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="666d1e22-f3af-4faf-87af-a9ea1070953d" name="error-handling-details"/>
+        </on-error-propagate>
+        <on-error-propagate type="HTTP:UNSUPPORTED_MEDIA_TYPE" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="10536d2b-df14-4161-b2b1-9ffa47688cb5" >
+            <set-variable value="#[415]" doc:name="Set the HTTP Status - 415" doc:id="36ae0b47-6948-4f6f-b00f-8a3b50cf9dda" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="0c97c0cc-0c45-41f8-b6d8-29bfba49540d" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="8204e2bf-8d94-4e4b-a2ca-b602bed6384c" name="error-handling-details"/>
+        </on-error-propagate>
+        
+        <!-- Streaming related exception -->
+        <on-error-propagate type="STREAM_MAXIMUM_SIZE_EXCEEDED" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="17d7a81c-2666-43d0-98d7-15106b88ab2f" >
+            <set-variable value="#[500]" doc:name="Set the HTTP Status - 500" doc:id="4adcdeac-f7a4-4118-a59e-d19f92bcdee2" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="a95f99d8-16fa-4561-bc8e-3beeff1b1229" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="56c9c700-8d67-4edc-9538-0795f8f6fa70" name="error-handling-details"/>
+        </on-error-propagate>
+        
+        <!-- Generic CONNECTIVITY Related Exception handling start. Order matters -->
+        <on-error-propagate type="RETRY_EXHAUSTED" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="10395205-83be-47c8-aff5-4984e646c0e5" >
+            <set-variable value="#[503]" doc:name="Set the HTTP Status - 503" doc:id="07b70a19-ff59-40f1-abd5-a22a1504b343" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="ded951b8-b64c-4c90-87c3-b1a9934dff04" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="42214113-060e-4760-9f3a-0db3af5dcd72" name="error-handling-details"/>
+        </on-error-propagate>
+        <on-error-propagate type="REDELIVERY_EXHAUSTED" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="34de02fa-68d5-49bc-9c38-dd2a9e1ff0b8" >
+            <set-variable value="#[503]" doc:name="Set the HTTP Status - 503" doc:id="0e8c9219-0d6f-49ba-8445-0e51fb4ffafb" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="a3e810b3-ce32-4db0-b9db-504d212dae02" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="4c7a1af0-5b80-45fa-ae2b-71303fb746cb" name="error-handling-details"/>
+        </on-error-propagate>
+        <on-error-propagate type="CONNECTIVITY" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="3427cd01-a9e9-4885-8faf-c687f8712383" >
+            <set-variable value="#[503]" doc:name="Set the HTTP Status - 503" doc:id="b405267b-0dae-44f0-8d88-30b4eafbb340" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="ca033916-b23d-4780-8168-95f9cbb85d24" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="6f196934-ecd4-4a3d-b7ac-19b873385fee" name="error-handling-details"/>
+        </on-error-propagate>
+        <on-error-propagate type="TIMEOUT" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="c2ae18ce-e677-44a2-8502-bfb519ac99a7" >
+            <set-variable value="#[504]" doc:name="Set the HTTP Status - 504" doc:id="740d0cee-4f11-4832-ab4e-2c92d149758c" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="d37b0d52-d9d0-4b7a-8f10-73705105a19f" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="da7217cf-fc2b-48a5-a982-60153a220333" name="error-handling-details"/>
+        </on-error-propagate>
+        <!-- Generic CONNECTIVITY Exception handling end -->
+        
+        <on-error-propagate type="TRANSFORMATION" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="ea324c85-3835-4f90-87c8-a47a49dc982f" >
+            <set-variable value="#[400]" doc:name="Set the HTTP Status - 400" doc:id="3e88b9f9-590b-4320-9e7f-4a632a0a99cf" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="7dbaf32a-d270-4d1a-b712-d803777ccf4c" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="82c4617d-1d3e-4c44-96e9-eb61afcf8c93" name="error-handling-details"/>
+        </on-error-propagate>
+        
+<!--        <on-error-propagate type="SCRIPTING:COMPILATION" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="dd1d9eff-61f6-4302-baa2-f97b7a060c49" >
+            <set-variable value="#[500]" doc:name="Set the HTTP Status - 500" doc:id="47f84658-5ff4-4741-a999-bc9123c24982" variableName="httpStatus" />
+                <flow-ref doc:name="global-prepare-error-response-sub-flow" doc:id="2a6a3c4f-ba77-4559-9218-e45c08824b43" name="global-prepare-error-response-sub-flow"/>
+        </on-error-propagate>
+        <on-error-propagate type="SCRIPTING:EXECUTION" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="ae7fc5f9-4468-45b0-a6f0-07eb97aab1a3" >
+            <set-variable value="#[500]" doc:name="Set the HTTP Status - 500" doc:id="6f61b1bb-06db-4f95-b5b3-60a411c8dac8" variableName="httpStatus" />
+                <flow-ref doc:name="global-prepare-error-response-sub-flow" doc:id="9c61ad15-e15d-4639-b294-31b27c45102a" name="global-prepare-error-response-sub-flow"/>
+        </on-error-propagate>
+        <on-error-propagate type="SCRIPTING:UNKNOWN_ENGINE" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="e9409632-58c7-4fae-ae9e-efafd51c9245" >
+            <set-variable value="#[500]" doc:name="Set the HTTP Status - 500" doc:id="e87ee9c5-ee8d-4f12-a569-ee7557e6a34d" variableName="httpStatus" />
+                <flow-ref doc:name="global-prepare-error-response-sub-flow" doc:id="a9ff3feb-1514-4435-8090-e83e765af57b" name="global-prepare-error-response-sub-flow"/>
+        </on-error-propagate> -->
+        
+        <on-error-propagate type="EXPRESSION" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="15c224f3-3a8e-47c1-a3e6-d961d2f02868" >
+            <set-variable value="#[500]" doc:name="Set the HTTP Status - 500" doc:id="fb2f2b54-bbf2-4a28-a9fd-790ddfd36934" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="736f905a-926f-41d8-a897-2fa8b503298e" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="44065d7b-6afd-4992-bf18-14b44bc9f38c" name="error-handling-details"/>
+        </on-error-propagate>    
+        <on-error-propagate type="ROUTING" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="f9093c8e-9cb5-47a4-a2c6-5b1eac634b63" >
+            <set-variable value="#[400]" doc:name="Set the HTTP Status - 400" doc:id="96ad6209-8366-4435-81ad-ad14060bb9b7" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="b8445811-80b8-47b2-9457-5638c75eb76a" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="5e5d6908-c041-4c8a-8524-f3b0d5b331a8" name="error-handling-details"/>
+        </on-error-propagate>
+        <on-error-propagate type="SECURITY" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="7fd5689d-0a0c-49b8-a2ea-1a95b5e877c0" >
+            <set-variable value="#[401]" doc:name="Set the HTTP Status - 401" doc:id="8154dc20-79a6-42a8-b6f1-ce6e28316ea6" variableName="httpStatus" />
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="9d0f1d38-6dfc-4449-aab9-8067682ccb54" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="8740059b-5947-4ef7-adcb-35f3ffe2fc52" name="error-handling-details"/>
+        </on-error-propagate>
+        
+        
+        <!-- If none of the above matches then handle a the exception using generic handler -->
+        <on-error-propagate type="ANY" enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="e1e105ee-2b34-4629-a97c-991191ea2993">
+            <set-variable value="#[500]" doc:name="Set HTTP Status - 500" variableName="httpStatus"/>
+				<json-logger:logger doc:name="ERROR : DESCRIPTION" doc:id="fab412ee-b756-4c1c-a741-46c28f307f27" config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="#[error.exception.message]">
+				<json-logger:content ><![CDATA[#[output application/java ---
+				"httpStatusCode: " ++ vars.httpStatus ++ " - " ++ error.errorType.identifier]]]></json-logger:content>
+			</json-logger:logger>
+			<flow-ref doc:name="error-handling-details" doc:id="d9622932-1cdd-4ca2-a750-ef785d678e04" name="error-handling-details"/>
+        </on-error-propagate>
+        
+    </error-handler>
+	<sub-flow name="error-handling-details" doc:id="b814cd9e-24c3-4a8c-bebb-581fa701079d" >
+		<set-variable value="${secure::api.errorResponse}" doc:name="errorResponse" doc:id="62ee882a-6db0-420f-b7b8-96f172a553b9" variableName="errorResponse"/>
+		<choice doc:name="Choice" doc:id="18542c5f-444e-444a-8006-a8f24e5a0588" >
+			<when expression='#[vars.errorResponse == "verbose"]'>
+				<ee:transform doc:name="verbose" doc:id="9bd084f0-3dc0-4e96-b4a9-fac03632fbdf" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"status": vars.httpStatus,
+	"message": error.cause.detailedMessage default error.detailedDescription,
+	"error": error
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[vars.errorResponse == "info"]'>
+				<ee:transform doc:name="info" doc:id="9af7e661-cf02-4cee-9b0a-1a97b7b49203" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"status": vars.httpStatus,
+	"message": error.cause.detailedMessage default error.detailedDescription
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="none" doc:id="aaf3c800-f909-40a9-a95e-953c0d790cfa" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"status": vars.httpStatus,
+	"message": "There was an error processing your request"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</sub-flow>
+    </mule>
