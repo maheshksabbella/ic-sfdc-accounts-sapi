@@ -31,28 +31,22 @@
 				<extensions>true</extensions>
 				<configuration>
 				<cloudHubDeployment>
-<uri>https://anypoint.mulesoft.com</uri>
-<muleVersion>4.4.0</muleVersion>
-<username>mahesh_16122023</username>
-<password>Mahesh@667575</password>
-<applicationName>ic-sfdc-accounts-sapi</applicationName>
-<environment>Sandbox</environment>
-<region>us-east-1</region>
-<workers>1</workers>
-<workerType>MICRO</workerType>
-<properties>
-
-							<mule.env>${mule.env}</mule.env>
-							<api.id>${api.id}</api.id>
-							<anypoint.platform.client_id>e259f31c0d6041a8a5a7d22b25a23ebc</anypoint.platform.client_id>
-							<anypoint.platform.client_secret>0B6FbD002eeD4C48AAe294f4f7C26c8d</anypoint.platform.client_secret>
-							<anypoint.platform.base_uri>https://anypoint.mulesoft.com/</anypoint.platform.base_uri>
-							<anypoint.platform.analytics_base_uri>https://analytics-ingest.anypoint.mulesoft.com/</anypoint.platform.analytics_base_uri>
-...
-</properties>
-...
-</cloudHubDeployment>
-</configuration>
+      <uri>https://anypoint.mulesoft.com</uri>
+      <muleVersion>4.4.0</muleVersion>
+      <username>mahesh_16122023</username>
+      <password>Mahesh@667575</password>
+      <applicationName>ic-accounts-sapi</applicationName>
+      <environment>Sandbox</environment>
+      <region>us-east-1</region>
+      <workers>1</workers>
+      <workerType>MICRO</workerType>
+      <properties>
+	      <anypoint.platform.config.analytics.agent.enabled>false</anypoint.platform.config.analytics.agent.enabled>
+        <anypoint.platform.client_id>e259f31c0d6041a8a5a7d22b25a23ebc</anypoint.platform.client_id>
+	      <anypoint.platform.client_secret>0B6FbD002eeD4C48AAe294f4f7C26c8d</anypoint.platform.client_secret>
+      </properties>
+    </cloudHubDeployment>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
