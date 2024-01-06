@@ -35,7 +35,7 @@
 <muleVersion>4.4.0</muleVersion>
 <username>mahesh_16122023</username>
 <password>Mahesh@667575</password>
-<applicationName>artifactproject</applicationName>
+<applicationName>ic-sfdc-accounts-sapi</applicationName>
 <environment>Sandbox</environment>
 <region>us-east-1</region>
 <workers>1</workers>
