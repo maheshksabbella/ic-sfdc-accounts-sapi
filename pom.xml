@@ -35,16 +35,14 @@
 <muleVersion>4.4.0</muleVersion>
 <username>shyamsabbella</username>
 <password>Mahesh@667575</password>
-<applicationName>HelloWorldProject</applicationName>
+<applicationName>ic-sfdc-accounts</applicationName>
 <environment>Sandbox</environment>
 <region>us-east-1</region>
 <workers>1</workers>
 <workerType>MICRO</workerType>
 <properties>
 <key>value</key>
-...
 </properties>
-...
 </cloudHubDeployment>
 
 				</configuration>
